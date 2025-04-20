@@ -1,9 +1,11 @@
 package com.example.university.service;
 
 
+import com.example.university.model.dto.Page;
 import com.example.university.model.entity.User;
 import com.example.university.model.request.ChangePasswordRequest;
 import com.example.university.model.request.LoginRequest;
+import com.example.university.model.request.PageRequest;
 import com.example.university.model.request.UserRequest;
 import com.example.university.model.request.search.FullUserSearch;
 import com.example.university.model.request.search.UserSearch;
@@ -31,7 +33,7 @@ public interface UserService {
 
     List<User> list(List<String> userIds);
 
-    List<User> getPage(FullUserSearch request);
+    Page<User> getPage(PageRequest<FullUserSearch> request);
 
     User create(User request, User user);
 

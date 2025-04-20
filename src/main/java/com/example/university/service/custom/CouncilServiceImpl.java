@@ -2,7 +2,6 @@ package com.example.university.service.custom;
 
 import com.example.university.model.dto.CouncilDto;
 import com.example.university.model.dto.Page;
-import com.example.university.model.entity.Council;
 import com.example.university.model.request.PageRequest;
 import com.example.university.model.request.search.CouncilSearch;
 import com.example.university.repository.CouncilRepository;
@@ -21,7 +20,7 @@ public class CouncilServiceImpl implements CouncilService {
 
     public Page<CouncilDto> getPage(PageRequest<CouncilSearch> request) {
         List<CouncilDto> councils = councilRepository.getList(request);
-        long totalItems = councilRepository.countCouncil(request);
+        long totalItems = councilRepository.count(request);
         return new Page<>(councils, totalItems);
     }
 }

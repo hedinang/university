@@ -68,7 +68,7 @@ public class CustomCouncilRepositoryImpl implements CustomCouncilRepository {
     }
 
     @Override
-    public Long countCouncil(PageRequest<CouncilSearch> request) {
+    public Long count(PageRequest<CouncilSearch> request) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("select count(*) from council ");
 

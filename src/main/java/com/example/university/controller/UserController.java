@@ -1,6 +1,10 @@
 package com.example.university.controller;
 
+import com.example.university.model.dto.CouncilDto;
+import com.example.university.model.dto.Page;
 import com.example.university.model.entity.User;
+import com.example.university.model.request.PageRequest;
+import com.example.university.model.request.search.CouncilSearch;
 import com.example.university.model.request.search.FullUserSearch;
 import com.example.university.repository.UserRepository;
 import com.example.university.service.UserService;
@@ -154,7 +158,7 @@ public class UserController {
 //    }
 //
     @PostMapping("/admin/page")
-    public BaseResponse<List<User>> basicUserInfoList(@RequestBody FullUserSearch request, @AuthenticationPrincipal User user) {
+    public BaseResponse<Page<User>> basicUserInfoList(@RequestBody PageRequest<FullUserSearch> request, @AuthenticationPrincipal User user) {
         if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
 
         return new BaseResponse<>(200, "Get data successfully", userService.getPage(request));

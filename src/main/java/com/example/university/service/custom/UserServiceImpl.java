@@ -1,9 +1,11 @@
 package com.example.university.service.custom;
 
 import com.example.university.model.dto.CustomUserDetails;
+import com.example.university.model.dto.Page;
 import com.example.university.model.entity.User;
 import com.example.university.model.request.ChangePasswordRequest;
 import com.example.university.model.request.LoginRequest;
+import com.example.university.model.request.PageRequest;
 import com.example.university.model.request.UserRequest;
 import com.example.university.model.request.search.FullUserSearch;
 import com.example.university.model.request.search.UserSearch;
@@ -133,9 +135,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<User> getPage(FullUserSearch request) {
+    public Page<User> getPage(PageRequest<FullUserSearch> request) {
 //        return userRepository.getPage(request);
-        return userRepository.findAll();
+//        return userRepository.findAll();
+
+        List<User> users = userRepository.getList(request);
+        long totalItems = userRepository.count(request);
+        return new Page<>(users, totalItems);
     }
 
     @Override
