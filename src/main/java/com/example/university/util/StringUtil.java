@@ -1,8 +1,6 @@
 package com.example.university.util;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
@@ -13,12 +11,6 @@ import java.net.SocketException;
 import java.util.*;
 
 public class StringUtil {
-
-    public static Aggregation buildAggregation(List<String> list) {
-        List<AggregationOperation> aggregationOperations = list.stream().filter(org.apache.commons.lang3.StringUtils::isNotBlank).map(Aggregation::stage).toList();
-        return Aggregation.newAggregation(aggregationOperations);
-    }
-
     public static String generateId() {
         return UUID.randomUUID().toString();
     }

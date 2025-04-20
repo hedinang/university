@@ -1,7 +1,6 @@
 package com.example.university.model.dto;
 
 import lombok.Data;
-import org.example.authentication.model.entity.User;
 
 @Data
 public class UserDto {

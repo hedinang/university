@@ -84,7 +84,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
     @Bean
     UserDetailsService userDetailsService() {
-        return userId -> new CustomUserDetails(userRepository.findByUserId(userId).orElseThrow(() -> new ServiceException("User not found")));
+        return username -> new CustomUserDetails(userRepository.findByUsername(username).orElseThrow(() -> new ServiceException("User not found")));
     }
 
     @Bean

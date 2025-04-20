@@ -1,7 +1,7 @@
 package com.example.university.util.exception;//package com.project_management.util.exception;
 
+import com.example.university.util.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.example.authentication.util.response.BaseResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

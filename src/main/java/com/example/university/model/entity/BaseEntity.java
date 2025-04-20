@@ -1,6 +1,8 @@
 package com.example.university.model.entity;
 
+import com.example.university.util.date.LocalDateTimeStringConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
@@ -17,7 +19,7 @@ public abstract class BaseEntity {
 
     @Column(name = "created_at", updatable = false)
     @CreatedDate
-//    @Convert(converter = LocalDateTimeStringConverter.class)
+    @Convert(converter = LocalDateTimeStringConverter.class)
     private String createdAt;
 
     @Column(name = "created_by", updatable = false)
@@ -26,7 +28,7 @@ public abstract class BaseEntity {
 
     @Column(name = "updated_at")
     @LastModifiedDate
-//    @Convert(converter = LocalDateTimeStringConverter.class)
+    @Convert(converter = LocalDateTimeStringConverter.class)
     private String updatedAt;
 
     @Column(name = "updated_by")

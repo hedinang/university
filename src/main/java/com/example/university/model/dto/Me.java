@@ -1,7 +1,7 @@
 package com.example.university.model.dto;
 
+import com.example.university.model.entity.User;
 import lombok.Data;
-import org.example.authentication.model.entity.User;
 
 import java.util.Map;
 
