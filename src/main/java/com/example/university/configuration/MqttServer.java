@@ -1,20 +1,16 @@
-package com.example.university;
+package com.example.university.configuration;
 
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.UUID;
 
-@SpringBootApplication
-public class UniversityApplication {
+public class MqttServer {
     private static final String BROKER = "tcp://localhost:1883"; // Địa chỉ broker
     private static final String TOPIC = "test/topic"; // Topic để nhận message
     private static final String CLIENT_ID = "JavaServer-" + UUID.randomUUID().toString();
 
     public static void main(String[] args) {
-//        SpringApplication.run(UniversityApplication.class, args);
         try {
             // Tạo client MQTT
             MqttClient client = new MqttClient(BROKER, CLIENT_ID, new MemoryPersistence());
@@ -67,7 +63,5 @@ public class UniversityApplication {
             System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
-
 }
