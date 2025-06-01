@@ -15,4 +15,5 @@ public class FullUserSearch {
     String userName;
     List<String> excludingUserIds;
     Boolean isActive;
+    String role;
 }

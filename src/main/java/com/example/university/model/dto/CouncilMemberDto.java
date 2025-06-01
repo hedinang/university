@@ -8,11 +8,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CouncilMemberDto {
+    private String councilMemberId;
     private String councilId;
     private String userId;
     private String name;
     private String status;
     private String councilRole;
-
-
 }

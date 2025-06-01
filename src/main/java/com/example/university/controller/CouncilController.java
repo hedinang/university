@@ -5,6 +5,7 @@ import com.example.university.model.dto.Page;
 import com.example.university.model.entity.Council;
 import com.example.university.model.entity.User;
 import com.example.university.model.request.PageRequest;
+import com.example.university.model.request.StoreCouncilRequest;
 import com.example.university.model.request.search.CouncilSearch;
 import com.example.university.service.CouncilService;
 import com.example.university.util.response.BaseResponse;
@@ -31,5 +32,12 @@ public class CouncilController {
         if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
 
         return new BaseResponse<>(200, "Get data successfully", councilService.getPage(request));
+    }
+
+    @PostMapping("/store")
+    public BaseResponse<CouncilDto> getList(@RequestBody StoreCouncilRequest request, @AuthenticationPrincipal User user) {
+        if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
+
+        return new BaseResponse<>(200, "Get data successfully", councilService.store(request));
     }
 }

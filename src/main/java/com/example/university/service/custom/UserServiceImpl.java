@@ -135,6 +135,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public List<User> list(FullUserSearch request) {
+        return userRepository.findByRoleCode(request.getRole());
+    }
+
+    @Override
     public Page<User> getPage(PageRequest<FullUserSearch> request) {
 //        return userRepository.getPage(request);
 //        return userRepository.findAll();

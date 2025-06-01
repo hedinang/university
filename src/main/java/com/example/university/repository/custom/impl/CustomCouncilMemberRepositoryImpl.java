@@ -17,7 +17,8 @@ public class CustomCouncilMemberRepositoryImpl implements CustomCouncilMemberRep
     @Override
     public List<CouncilMemberDto> listCouncilMember(List<String> councilIds) {
         StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("select council_member.council_id as councilId, " +
+        queryBuilder.append("select council_member.council_member_id as councilMemberId, " +
+                "council_member.council_id as councilId, " +
                 "u.user_id as userId, " +
                 "u.name as name, " +
                 "council_member.status as status, " +

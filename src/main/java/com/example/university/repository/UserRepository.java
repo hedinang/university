@@ -20,4 +20,6 @@ public interface UserRepository extends JpaRepository<User, String>, CustomUserR
     Optional<User> findByUsername(String username);
 
     List<User> findByUserIdIn(List<String> userIds);
+
+    List<User> findByRoleCode(String roleCode);
 }

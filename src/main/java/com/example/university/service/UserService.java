@@ -33,6 +33,8 @@ public interface UserService {
 
     List<User> list(List<String> userIds);
 
+    List<User> list(FullUserSearch request);
+
     Page<User> getPage(PageRequest<FullUserSearch> request);
 
     User create(User request, User user);

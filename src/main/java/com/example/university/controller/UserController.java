@@ -74,7 +74,7 @@ public class UserController {
         return Response.toData(userService.getMe(user.getUserId()));
     }
 
-//    @PostMapping("/logout")
+    //    @PostMapping("/logout")
 //    public BaseResponse<Object> logoutUser(@RequestBody LogoutRequest request, @AuthenticationPrincipal User user) {
 //        if (userService.logout(user.getUserId(), request)) {
 //            return Response.toData(user.getUserId());
@@ -162,6 +162,13 @@ public class UserController {
         if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
 
         return new BaseResponse<>(200, "Get data successfully", userService.getPage(request));
+    }
+
+    @PostMapping("/admin/list")
+    public BaseResponse<List<User>> getUserList(@RequestBody FullUserSearch request, @AuthenticationPrincipal User user) {
+        if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
+
+        return new BaseResponse<>(200, "Get data successfully", userService.list(request));
     }
 
     @PostMapping("/admin/create")
