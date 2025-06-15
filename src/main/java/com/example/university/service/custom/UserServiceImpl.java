@@ -141,9 +141,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Page<User> getPage(PageRequest<FullUserSearch> request) {
-//        return userRepository.getPage(request);
-//        return userRepository.findAll();
-
         List<User> users = userRepository.getList(request);
         long totalItems = userRepository.count(request);
         return new Page<>(users, totalItems);
@@ -178,6 +175,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User create(User request, User user) {
+        User existedUser = userRepository.findByUsername(request.getUsername().toUpperCase()).orElse(null);
+
+        if (existedUser != null) {
+            throw new ServiceException(ErrorCode.E401.code(), String.format("Username %s is existed", request.getUsername()));
+        }
+
         if (request.getUsername() == null || request.getUsername().isEmpty() || request.getName() == null || request.getName().isEmpty()) {
             throw new ServiceException(ErrorCode.E401.code(), "UserId or username must be not null");
         }
@@ -252,6 +255,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         oldUser.setPhone(request.getPhone());
         oldUser.setUpdatedBy(user.getUserId());
         oldUser.setUpdatedAt(DateUtil.dateToString(new Date()));
+        oldUser.setBirthday(request.getBirthday());
         return userRepository.save(oldUser);
     }
 }

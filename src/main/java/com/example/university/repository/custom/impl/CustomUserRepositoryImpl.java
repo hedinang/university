@@ -54,26 +54,32 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
     @Override
     public List<User> getList(PageRequest<FullUserSearch> request) {
         StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("select * from university.user ");
+        queryBuilder.append("select * from university.user u ");
+        queryBuilder.append("where 1 = 1 ");
 
-//        queryBuilder.append("select wp.* from wm_prjct wp ");
-//        queryBuilder.append("left join university.council_member council_member on council.council_id = council_member.council_id ");
-//        queryBuilder.append("left join university.user u on u.user_id = council_member.member_id ");
-//        queryBuilder.append("where council_member.council_role = :councilRole ");
-//        queryBuilder.append("and wp.status = :status ");
+        if (request.getSearch().getTextSearch() != null && !request.getSearch().getTextSearch().isEmpty()) {
+            queryBuilder.append("and u.name ilike :name ");
+            queryBuilder.append("or u.email ilike :email ");
+            queryBuilder.append("or u.phone ilike :phone ");
+        }
 
-        //limit offset
-//        queryBuilder.append(" order by wp.prjct_sn desc ");
-        queryBuilder.append("LIMIT :limit OFFSET :offset ");
+        if (request.getSearch().getRole() != null && !request.getSearch().getRole().isEmpty()) {
+            queryBuilder.append("and u.role_code = :role ");
+        }
 
+        queryBuilder.append("order by u.updated_at desc LIMIT :limit OFFSET :offset ");
         Query query = entityManager.createNativeQuery(queryBuilder.toString(), User.class);
-//        query.setParameter("participantCode", participantCode);
-//        query.setParameter("status", status);
-//
-//        if (projectName != null && !projectName.isEmpty()) {
-//            query.setParameter("projectName", projectName);
-//        }
-//        query.setParameter("councilRole", "HOST");
+
+        if (request.getSearch().getTextSearch() != null && !request.getSearch().getTextSearch().isEmpty()) {
+            query.setParameter("name", "%" + request.getSearch().getTextSearch() + "%");
+            query.setParameter("email", "%" + request.getSearch().getTextSearch() + "%");
+            query.setParameter("phone", "%" + request.getSearch().getTextSearch() + "%");
+        }
+
+        if (request.getSearch().getRole() != null && !request.getSearch().getRole().isEmpty()) {
+            query.setParameter("role", request.getSearch().getRole());
+        }
+
         query.setParameter("limit", request.getLimit());
         query.setParameter("offset", (request.getPage() - 1) * request.getLimit());
         return query.getResultList();
@@ -82,9 +88,31 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
     @Override
     public Long count(PageRequest<FullUserSearch> request) {
         StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("select count(*) from user ");
+        queryBuilder.append("select count(*) from university.user u ");
+        queryBuilder.append("where 1 = 1 ");
+
+        if (request.getSearch().getTextSearch() != null && !request.getSearch().getTextSearch().isEmpty()) {
+            queryBuilder.append("and u.name ilike :name ");
+            queryBuilder.append("or u.email ilike :email ");
+            queryBuilder.append("or u.phone ilike :phone ");
+        }
+
+        if (request.getSearch().getRole() != null && !request.getSearch().getRole().isEmpty()) {
+            queryBuilder.append("and u.role_code = :role ");
+        }
 
         Query query = entityManager.createNativeQuery(queryBuilder.toString());
+
+        if (request.getSearch().getTextSearch() != null && !request.getSearch().getTextSearch().isEmpty()) {
+            query.setParameter("name", "%" + request.getSearch().getTextSearch() + "%");
+            query.setParameter("email", "%" + request.getSearch().getTextSearch() + "%");
+            query.setParameter("phone", "%" + request.getSearch().getTextSearch() + "%");
+        }
+
+        if (request.getSearch().getRole() != null && !request.getSearch().getRole().isEmpty()) {
+            query.setParameter("role", request.getSearch().getRole());
+        }
+
         return ((Number) query.getSingleResult()).longValue();
     }
 }

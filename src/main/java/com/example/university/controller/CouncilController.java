@@ -29,14 +29,14 @@ public class CouncilController {
 
     @PostMapping("/page")
     public BaseResponse<Page<CouncilDto>> getList(@RequestBody PageRequest<CouncilSearch> request, @AuthenticationPrincipal User user) {
-        if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
+        if (!Objects.equals(user.getRoleCode(), "TEACHER")) return new BaseResponse<>(403, "Dont have permission", null);
 
         return new BaseResponse<>(200, "Get data successfully", councilService.getPage(request));
     }
 
     @PostMapping("/store")
     public BaseResponse<CouncilDto> getList(@RequestBody StoreCouncilRequest request, @AuthenticationPrincipal User user) {
-        if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
+        if (!Objects.equals(user.getRoleCode(), "TEACHER")) return new BaseResponse<>(403, "Dont have permission", null);
 
         return new BaseResponse<>(200, "Get data successfully", councilService.store(request));
     }

@@ -1,11 +1,15 @@
 package com.example.university.model.entity;
 
 
-import com.example.university.util.date.LocalDateTimeStringConverter;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Data
 @Entity
@@ -42,7 +46,7 @@ public class User extends BaseEntity {
     @Column(name = "phone")
     private String phone;
 
-//    @Convert(converter = LocalDateTimeStringConverter.class)
-//    @Column(name = "birthday")
-//    private String birthday;
+    //    @Convert(converter = LocalDateTimeStringConverter.class)
+    @Column(name = "birthday")
+    private Date birthday;
 }

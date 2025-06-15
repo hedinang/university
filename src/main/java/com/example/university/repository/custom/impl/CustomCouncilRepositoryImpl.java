@@ -39,7 +39,23 @@ public class CustomCouncilRepositoryImpl implements CustomCouncilRepository {
 //        queryBuilder.append("select wp.* from wm_prjct wp ");
         queryBuilder.append("left join university.council_member council_member on council.council_id = council_member.council_id ");
         queryBuilder.append("left join university.user u on u.user_id = council_member.member_id ");
-        queryBuilder.append("where council_member.council_role = :councilRole ");
+        queryBuilder.append("where 1=1 ");
+
+        if (request.getSearch().getMemberId() != null) {
+            queryBuilder.append("and council_member.member_id = :memberId ");
+        } else {
+            queryBuilder.append("and council_member.council_role = :councilRole ");
+        }
+
+        if (request.getSearch().getCouncilName() != null && !request.getSearch().getCouncilName().isEmpty()) {
+            queryBuilder.append("and council.council_name ilike :councilName ");
+        }
+
+        if (request.getSearch().getYear() != null) {
+            queryBuilder.append("and council.year = :year ");
+        }
+
+
 //        queryBuilder.append("and wp.status = :status ");
 
         //limit offset
@@ -47,13 +63,21 @@ public class CustomCouncilRepositoryImpl implements CustomCouncilRepository {
         queryBuilder.append("LIMIT :limit OFFSET :offset ");
 
         Query query = entityManager.createNativeQuery(queryBuilder.toString(), CouncilDto.class);
-//        query.setParameter("participantCode", participantCode);
-//        query.setParameter("status", status);
-//
-//        if (projectName != null && !projectName.isEmpty()) {
-//            query.setParameter("projectName", projectName);
-//        }
-        query.setParameter("councilRole", "HOST");
+
+        if (request.getSearch().getMemberId() != null) {
+            query.setParameter("memberId", request.getSearch().getMemberId());
+        } else {
+            query.setParameter("councilRole", "HOST");
+        }
+
+        if (request.getSearch().getCouncilName() != null && !request.getSearch().getCouncilName().isEmpty()) {
+            query.setParameter("councilName", "%" + request.getSearch().getCouncilName() + "%");
+        }
+
+        if (request.getSearch().getYear() != null) {
+            query.setParameter("year", request.getSearch().getYear());
+        }
+
         query.setParameter("limit", request.getLimit());
         query.setParameter("offset", (request.getPage() - 1) * request.getLimit());
 

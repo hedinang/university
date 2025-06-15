@@ -15,4 +15,5 @@ public class UserDto {
     private String roleCode;
     private String mood;
     private String createdAt;
+    private String birthday;
 }

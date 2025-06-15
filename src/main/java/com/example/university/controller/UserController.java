@@ -3,6 +3,7 @@ package com.example.university.controller;
 import com.example.university.model.dto.CouncilDto;
 import com.example.university.model.dto.Page;
 import com.example.university.model.entity.User;
+import com.example.university.model.request.LogoutRequest;
 import com.example.university.model.request.PageRequest;
 import com.example.university.model.request.search.CouncilSearch;
 import com.example.university.model.request.search.FullUserSearch;
@@ -74,14 +75,15 @@ public class UserController {
         return Response.toData(userService.getMe(user.getUserId()));
     }
 
-    //    @PostMapping("/logout")
-//    public BaseResponse<Object> logoutUser(@RequestBody LogoutRequest request, @AuthenticationPrincipal User user) {
-//        if (userService.logout(user.getUserId(), request)) {
-//            return Response.toData(user.getUserId());
-//        }
-//        return Response.toError(HttpStatus.BAD_REQUEST.value(), "logout fail");
-//    }
-//
+    @PostMapping("/logout")
+    public BaseResponse<Object> logoutUser(@RequestBody LogoutRequest request, @AuthenticationPrincipal User user) {
+        if (userService.logout(user.getUserId())) {
+            return Response.toData(user.getUserId());
+        }
+        return Response.toError(HttpStatus.BAD_REQUEST.value(), "logout fail");
+    }
+
+    //
 //    @PostMapping("/save-me")
 //    public BaseResponse<Object> saveMe(@AuthenticationPrincipal User user, @RequestBody UserRequest userRequest) {
 //        User currentUser = userRepository.findByUserId(user.getUserId()).orElse(null);
@@ -166,8 +168,6 @@ public class UserController {
 
     @PostMapping("/admin/list")
     public BaseResponse<List<User>> getUserList(@RequestBody FullUserSearch request, @AuthenticationPrincipal User user) {
-        if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
-
         return new BaseResponse<>(200, "Get data successfully", userService.list(request));
     }
 

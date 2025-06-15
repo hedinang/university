@@ -10,9 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FullUserSearch {
-    Integer limit;
-    Long skip;
-    String userName;
+    String textSearch;
     List<String> excludingUserIds;
     Boolean isActive;
     String role;
