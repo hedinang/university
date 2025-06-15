@@ -33,37 +33,125 @@ public class CustomTopicRepositoryImpl implements CustomTopicRepository {
                 "approver.name as approverName " +
                 "from university.topic topic ");
 
-//        queryBuilder.append("select wp.* from wm_prjct wp ");
         queryBuilder.append("left join university.user proposer on proposer.user_id = topic.proposer_id ");
         queryBuilder.append("left join university.user approver on approver.user_id = topic.approver_id ");
-//        queryBuilder.append("where council_member.council_role = :councilRole ");
-//        queryBuilder.append("and wp.status = :status ");
+        queryBuilder.append("where 1=1 ");
 
-        //limit offset
-//        queryBuilder.append(" order by wp.prjct_sn desc ");
-        queryBuilder.append("LIMIT :limit OFFSET :offset ");
+        if (request.getSearch().getTitle() != null) {
+            queryBuilder.append("and topic.title ilike :title ");
+        }
+
+        if (request.getSearch().getScore() != null) {
+            queryBuilder.append("and topic.score = :score ");
+        }
+
+        if (request.getSearch().getProgress() != null) {
+            queryBuilder.append("and topic.progress = :progress ");
+        }
+
+        if (request.getSearch().getProposerId() != null) {
+            queryBuilder.append("and topic.proposer_id = :proposerId ");
+        }
+
+        if (request.getSearch().getApproverId() != null) {
+            queryBuilder.append("and topic.approver_id = :approverId ");
+        }
+
+        if (request.getSearch().getTopicType() != null) {
+            queryBuilder.append("and topic.topic_type = :topicType ");
+        }
+
+        queryBuilder.append("order by topic.updated_at desc LIMIT :limit OFFSET :offset ");
 
         Query query = entityManager.createNativeQuery(queryBuilder.toString(), TopicDto.class);
-//        query.setParameter("participantCode", participantCode);
-//        query.setParameter("status", status);
-//
-//        if (projectName != null && !projectName.isEmpty()) {
-//            query.setParameter("projectName", projectName);
-//        }
-//        query.setParameter("councilRole", "HOST");
+        if (request.getSearch().getTitle() != null) {
+            query.setParameter("title", "%" + request.getSearch().getTitle() + "%");
+        }
+
+        if (request.getSearch().getScore() != null) {
+            query.setParameter("score", request.getSearch().getScore());
+        }
+
+        if (request.getSearch().getProgress() != null) {
+            query.setParameter("progress", request.getSearch().getProgress());
+        }
+
+        if (request.getSearch().getProposerId() != null) {
+            query.setParameter("proposerId", request.getSearch().getProposerId());
+        }
+
+        if (request.getSearch().getApproverId() != null) {
+            query.setParameter("approverId", request.getSearch().getApproverId());
+        }
+
+        if (request.getSearch().getTopicType() != null) {
+            query.setParameter("topicType", request.getSearch().getTopicType());
+        }
+
         query.setParameter("limit", request.getLimit());
         query.setParameter("offset", (request.getPage() - 1) * request.getLimit());
-
         List<TopicDto> topicDtoList = query.getResultList();
         return topicDtoList;
     }
 
-//    @Override
-//    public Long count(PageRequest<TopicSearch> request) {
-//        StringBuilder queryBuilder = new StringBuilder();
-//        queryBuilder.append("select count(*) from council ");
-//
-//        Query query = entityManager.createNativeQuery(queryBuilder.toString());
-//        return ((Number) query.getSingleResult()).longValue();
-//    }
+    @Override
+    public Long count(PageRequest<TopicSearch> request) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("select count(*) from university.topic topic ");
+        queryBuilder.append("left join university.user proposer on proposer.user_id = topic.proposer_id ");
+        queryBuilder.append("left join university.user approver on approver.user_id = topic.approver_id ");
+        queryBuilder.append("where 1=1 ");
+
+        if (request.getSearch().getTitle() != null) {
+            queryBuilder.append("and topic.title = :title ");
+        }
+
+        if (request.getSearch().getScore() != null) {
+            queryBuilder.append("and topic.score = :score ");
+        }
+
+        if (request.getSearch().getProgress() != null) {
+            queryBuilder.append("and topic.progress = :progress ");
+        }
+
+        if (request.getSearch().getProposerId() != null) {
+            queryBuilder.append("and topic.proposer_id = :proposerId ");
+        }
+
+        if (request.getSearch().getApproverId() != null) {
+            queryBuilder.append("and topic.approver_id = :approverId ");
+        }
+
+        if (request.getSearch().getTopicType() != null) {
+            queryBuilder.append("and topic.topic_type = :topicType ");
+        }
+
+        Query query = entityManager.createNativeQuery(queryBuilder.toString());
+
+        if (request.getSearch().getTitle() != null) {
+            query.setParameter("title", request.getSearch().getTitle());
+        }
+
+        if (request.getSearch().getScore() != null) {
+            query.setParameter("score", request.getSearch().getScore());
+        }
+
+        if (request.getSearch().getProgress() != null) {
+            query.setParameter("progress", request.getSearch().getProgress());
+        }
+
+        if (request.getSearch().getProposerId() != null) {
+            query.setParameter("proposerId", request.getSearch().getProposerId());
+        }
+
+        if (request.getSearch().getApproverId() != null) {
+            query.setParameter("approverId", request.getSearch().getApproverId());
+        }
+
+        if (request.getSearch().getTopicType() != null) {
+            query.setParameter("topicType", request.getSearch().getTopicType());
+        }
+
+        return ((Number) query.getSingleResult()).longValue();
+    }
 }

@@ -40,6 +40,6 @@ public class TopicController {
     public BaseResponse<TopicDto> getList(@RequestBody StoreTopicRequest request, @AuthenticationPrincipal User user) {
 //        if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
 
-        return new BaseResponse<>(200, "Get data successfully", topicService.store(request));
+        return new BaseResponse<>(200, "Get data successfully", topicService.store(request, user));
     }
 }

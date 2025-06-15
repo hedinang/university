@@ -258,4 +258,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         oldUser.setBirthday(request.getBirthday());
         return userRepository.save(oldUser);
     }
+
+    @Override
+    public void resetPassword(String userId, User user) {
+        if (userId == null || userId.isEmpty()) {
+            throw new ServiceException(ErrorCode.E401.code(), "UserId must be not null");
+        }
+
+        User oldUser = userRepository.findByUserId(userId.toUpperCase()).orElse(null);
+
+        if (oldUser == null) {
+            throw new ServiceException(ErrorCode.E401.code(), String.format("UserId %s is not existed", userId));
+        }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode("Qwer123!");
+        oldUser.setPassword(encodedPassword);
+
+        try {
+            userRepository.save(oldUser);
+        } catch (Exception e) {
+            log.error("Failed to reset password: {}", e.getMessage());
+        }
+    }
 }

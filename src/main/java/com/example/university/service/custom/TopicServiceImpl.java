@@ -32,12 +32,12 @@ public class TopicServiceImpl implements TopicService {
 
     public Page<TopicDto> getPage(PageRequest<TopicSearch> request) {
         List<TopicDto> topicDtoList = topicRepository.getList(request);
-//        long totalItems = topicRepository.count(request);
-        return new Page<>(topicDtoList, 100L);
+        long totalItems = topicRepository.count(request);
+        return new Page<>(topicDtoList, totalItems);
     }
 
     @Transactional
-    public TopicDto store(StoreTopicRequest request) {
+    public TopicDto store(StoreTopicRequest request, User user) {
         Topic topic;
 
         if (request.getTopicId() != null) {
@@ -61,7 +61,7 @@ public class TopicServiceImpl implements TopicService {
             topic.setTopicId(StringUtil.generateId());
             topic.setTitle(request.getTitle());
             topic.setProposerId(request.getProposerId());
-            topic.setApproverId(request.getApproverId());
+            topic.setApproverId(user.getUserId());
             topic.setTopicType(request.getTopicType());
             topic.setStartTime(request.getStartTime());
             topic.setEndTime(request.getEndTime());
@@ -71,10 +71,10 @@ public class TopicServiceImpl implements TopicService {
             topicRepository.save(topic);
         }
 
-        Map<String, User> memberMap = userRepository.findByUserIdIn(List.of(request.getProposerId(), request.getApproverId())).
-                stream().collect(Collectors.toMap(User::getUserId, user -> user));
-        return new TopicDto(StringUtil.generateId(), request.getProposerId(), request.getApproverId(), request.getTitle(),
-                request.getTopicType(), request.getStatus(), request.getStartTime(), request.getEndTime(), request.getProgress(),
-                request.getScore(), memberMap.get(request.getProposerId()).getName(), memberMap.get(request.getApproverId()).getName());
+        Map<String, User> memberMap = userRepository.findByUserIdIn(List.of(request.getProposerId(), user.getUserId())).
+                stream().collect(Collectors.toMap(User::getUserId, u -> u));
+        return new TopicDto(topic.getTopicId(), topic.getProposerId(), topic.getProposerId(), topic.getTitle(),
+                topic.getTopicType(), topic.getStatus(), topic.getStartTime(), topic.getEndTime(), topic.getProgress(),
+                topic.getScore(), memberMap.get(topic.getProposerId()).getName(), memberMap.get(topic.getApproverId()).getName());
     }
 }

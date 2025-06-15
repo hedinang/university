@@ -184,7 +184,8 @@ public class UserController {
 
         return new BaseResponse<>(200, "Get data successfully", userService.update(request, user));
     }
-//
+
+    //
 //    @PostMapping("/admin/remove/{userId}")
 //    public BaseResponse<String> removeUser(@PathVariable String userId, @AuthenticationPrincipal User user) {
 //        if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
@@ -198,11 +199,11 @@ public class UserController {
 //        }
 //    }
 //
-//    @PostMapping("/admin/reset-password/{userId}")
-//    public BaseResponse<String> resetPassword(@PathVariable String userId, @AuthenticationPrincipal User user) {
-//        if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
-//
-//        userService.resetPassword(userId, user);
-//        return new BaseResponse<>(200, "Delete user successfully", null);
-//    }
+    @PostMapping("/admin/reset-password/{userId}")
+    public BaseResponse<String> resetPassword(@PathVariable String userId, @AuthenticationPrincipal User user) {
+        if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
+
+        userService.resetPassword(userId, user);
+        return new BaseResponse<>(200, "Delete user successfully", null);
+    }
 }

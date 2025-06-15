@@ -2,8 +2,6 @@ package com.example.university.repository.custom.impl;
 
 import com.example.university.model.dto.CouncilDto;
 import com.example.university.model.dto.CouncilMemberDto;
-import com.example.university.model.entity.Council;
-import com.example.university.model.entity.CouncilMember;
 import com.example.university.model.request.PageRequest;
 import com.example.university.model.request.search.CouncilSearch;
 import com.example.university.repository.CouncilMemberRepository;
@@ -35,8 +33,6 @@ public class CustomCouncilRepositoryImpl implements CustomCouncilRepository {
                 "council.status as status, " +
                 "council_member.council_role as councilRole " +
                 "from university.council council ");
-
-//        queryBuilder.append("select wp.* from wm_prjct wp ");
         queryBuilder.append("left join university.council_member council_member on council.council_id = council_member.council_id ");
         queryBuilder.append("left join university.user u on u.user_id = council_member.member_id ");
         queryBuilder.append("where 1=1 ");
@@ -55,12 +51,7 @@ public class CustomCouncilRepositoryImpl implements CustomCouncilRepository {
             queryBuilder.append("and council.year = :year ");
         }
 
-
-//        queryBuilder.append("and wp.status = :status ");
-
-        //limit offset
-//        queryBuilder.append(" order by wp.prjct_sn desc ");
-        queryBuilder.append("LIMIT :limit OFFSET :offset ");
+        queryBuilder.append("order by council.updated_at desc LIMIT :limit OFFSET :offset ");
 
         Query query = entityManager.createNativeQuery(queryBuilder.toString(), CouncilDto.class);
 
@@ -94,9 +85,40 @@ public class CustomCouncilRepositoryImpl implements CustomCouncilRepository {
     @Override
     public Long count(PageRequest<CouncilSearch> request) {
         StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("select count(*) from council ");
+        queryBuilder.append("select count(*) from university.council council ");
+        queryBuilder.append("left join university.council_member council_member on council.council_id = council_member.council_id ");
+        queryBuilder.append("left join university.user u on u.user_id = council_member.member_id ");
+        queryBuilder.append("where 1=1 ");
+
+        if (request.getSearch().getMemberId() != null) {
+            queryBuilder.append("and council_member.member_id = :memberId ");
+        } else {
+            queryBuilder.append("and council_member.council_role = :councilRole ");
+        }
+
+        if (request.getSearch().getCouncilName() != null && !request.getSearch().getCouncilName().isEmpty()) {
+            queryBuilder.append("and council.council_name ilike :councilName ");
+        }
+
+        if (request.getSearch().getYear() != null) {
+            queryBuilder.append("and council.year = :year ");
+        }
 
         Query query = entityManager.createNativeQuery(queryBuilder.toString());
+
+        if (request.getSearch().getMemberId() != null) {
+            query.setParameter("memberId", request.getSearch().getMemberId());
+        } else {
+            query.setParameter("councilRole", "HOST");
+        }
+
+        if (request.getSearch().getCouncilName() != null && !request.getSearch().getCouncilName().isEmpty()) {
+            query.setParameter("councilName", "%" + request.getSearch().getCouncilName() + "%");
+        }
+
+        if (request.getSearch().getYear() != null) {
+            query.setParameter("year", request.getSearch().getYear());
+        }
         return ((Number) query.getSingleResult()).longValue();
     }
 }

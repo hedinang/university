@@ -40,4 +40,6 @@ public interface UserService {
     User create(User request, User user);
 
     User update(User request, User user);
+
+    void resetPassword(String userId, User user);
 }
