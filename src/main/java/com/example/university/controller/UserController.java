@@ -76,7 +76,7 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public BaseResponse<Object> logoutUser(@RequestBody LogoutRequest request, @AuthenticationPrincipal User user) {
+    public BaseResponse<Object> logoutUser(@AuthenticationPrincipal User user) {
         if (userService.logout(user.getUserId())) {
             return Response.toData(user.getUserId());
         }
