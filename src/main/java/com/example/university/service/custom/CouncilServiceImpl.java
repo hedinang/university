@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,6 +54,7 @@ public class CouncilServiceImpl implements CouncilService {
             council.setCouncilName(request.getCouncilName());
             council.setYear(request.getYear());
             council.setStatus(request.getStatus());
+            council.setUpdatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             councilRepository.save(council);
             councilMemberRepository.deleteByCouncilId(request.getCouncilId());
         } else {

@@ -71,7 +71,7 @@ public class TopicServiceImpl implements TopicService {
             topicRepository.save(topic);
         }
 
-        Map<String, User> memberMap = userRepository.findByUserIdIn(List.of(request.getProposerId(), user.getUserId())).
+        Map<String, User> memberMap = userRepository.findByUserIdIn(List.of(topic.getProposerId(), topic.getApproverId())).
                 stream().collect(Collectors.toMap(User::getUserId, u -> u));
         return new TopicDto(topic.getTopicId(), topic.getProposerId(), topic.getProposerId(), topic.getTitle(),
                 topic.getTopicType(), topic.getStatus(), topic.getStartTime(), topic.getEndTime(), topic.getProgress(),
