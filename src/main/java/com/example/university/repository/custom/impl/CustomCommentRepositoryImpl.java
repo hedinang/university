@@ -23,7 +23,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
                 "comment.question_id as questionId, " +
                 "comment.user_id as userId, " +
                 "comment.content as content, " +
-                "comment.date as date, " +
+                "comment.created_at as date, " +
                 "u.name as commentatorName " +
                 "from university.comment comment ");
 
@@ -34,7 +34,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
         //limit offset
 //        queryBuilder.append(" order by wp.prjct_sn desc ");
-        queryBuilder.append("LIMIT :limit OFFSET :offset ");
+        queryBuilder.append("order by comment.created_at asc LIMIT :limit OFFSET :offset ");
 
         Query query = entityManager.createNativeQuery(queryBuilder.toString(), CommentDto.class);
 //        query.setParameter("participantCode", participantCode);

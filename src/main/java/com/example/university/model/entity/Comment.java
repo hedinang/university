@@ -9,8 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Time;
-
 @Data
 @Entity
 //@Table(name = "user")
@@ -30,7 +28,4 @@ public class Comment extends BaseEntity {
 
     @Column(name = "content")
     private String content;
-
-    @Column(name = "date")
-    private Time date;
 }

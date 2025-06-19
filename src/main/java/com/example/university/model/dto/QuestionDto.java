@@ -15,8 +15,8 @@ public class QuestionDto {
     private String recipientId;
     private String title;
     private String content;
-    private Date questionDate;
-    private Date lastCommentDate;
+    private String questionDate;
+    private String lastCommentDate;
     private Integer unread;
 
     private String questionerName;

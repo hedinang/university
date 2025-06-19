@@ -37,8 +37,8 @@ public class QuestionController {
 
     @PostMapping("/store")
     public BaseResponse<QuestionDto> getList(@RequestBody StoreQuestionRequest request, @AuthenticationPrincipal User user) {
-        if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
+        if (!Objects.equals(user.getRoleCode(), "STUDENT")) return new BaseResponse<>(403, "Dont have permission", null);
 
-        return new BaseResponse<>(200, "Get data successfully", questionService.store(request));
+        return new BaseResponse<>(200, "Get data successfully", questionService.store(request, user));
     }
 }

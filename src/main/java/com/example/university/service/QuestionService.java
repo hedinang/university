@@ -10,5 +10,5 @@ import com.example.university.model.request.search.QuestionSearch;
 public interface QuestionService {
     Page<QuestionDto> getPage(PageRequest<QuestionSearch> request, User user);
 
-    QuestionDto store(StoreQuestionRequest request);
+    QuestionDto store(StoreQuestionRequest request, User user);
 }

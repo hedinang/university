@@ -4,6 +4,7 @@ import com.example.university.model.dto.CommentDto;
 import com.example.university.model.dto.Page;
 import com.example.university.model.entity.User;
 import com.example.university.model.request.PageRequest;
+import com.example.university.model.request.StoreCommentRequest;
 import com.example.university.model.request.search.CommentSearch;
 import com.example.university.service.CommentService;
 import com.example.university.util.response.BaseResponse;
@@ -28,17 +29,15 @@ public class CommentController {
 
     @PostMapping("/page")
     public BaseResponse<Page<CommentDto>> getList(@RequestBody PageRequest<CommentSearch> request, @AuthenticationPrincipal User user) {
-        if (!List.of("TEACHER", "STUDENT").contains(user.getRoleCode()))
-            return new BaseResponse<>(403, "Dont have permission", null);
-
+        if (Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
 
         return new BaseResponse<>(200, "Get data successfully", commentService.getPage(request));
     }
-//
-//    @PostMapping("/store")
-//    public BaseResponse<CouncilDto> getList(@RequestBody StoreCouncilRequest request, @AuthenticationPrincipal User user) {
-//        if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
-//
-//        return new BaseResponse<>(200, "Get data successfully", councilService.store(request));
-//    }
+
+    @PostMapping("/store")
+    public BaseResponse<CommentDto> getList(@RequestBody StoreCommentRequest request, @AuthenticationPrincipal User user) {
+        if (Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
+
+        return new BaseResponse<>(200, "Get data successfully", commentService.store(request, user));
+    }
 }

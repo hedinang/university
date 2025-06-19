@@ -33,9 +33,6 @@ public class Question extends BaseEntity {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "question_date")
-    private Date questionDate;
-
     @Column(name = "last_comment_date")
-    private Date lastCommentDate;
+    private String lastCommentDate;
 }

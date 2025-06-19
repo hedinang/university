@@ -26,7 +26,7 @@ public class CustomQuestionRepositoryImpl implements CustomQuestionRepository {
                 "question.recipient_id as recipientId, " +
                 "question.title as title, " +
                 "question.content as content, " +
-                "question.question_date as questionDate, " +
+                "question.created_at as questionDate, " +
                 "question.last_comment_date as lastCommentDate, " +
                 "seen.unread as unread, " +
                 "questioner.name as questionerName, " +
@@ -56,7 +56,7 @@ public class CustomQuestionRepositoryImpl implements CustomQuestionRepository {
             queryBuilder.append("and recipient.name ilike :recipientName ");
         }
 
-        queryBuilder.append("LIMIT :limit OFFSET :offset ");
+        queryBuilder.append("order by question.updated_at desc LIMIT :limit OFFSET :offset ");
 
         Query query = entityManager.createNativeQuery(queryBuilder.toString(), QuestionDto.class);
         query.setParameter("userId", user.getUserId());
