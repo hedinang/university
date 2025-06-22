@@ -7,4 +7,6 @@ public interface SeenRepository extends JpaRepository<Seen, String> {
     Seen findByUserId(String userId);
 
     Seen findByQuestionIdAndUserIdNot(String questionId, String userId);
+
+    Seen findByQuestionIdAndUserId(String questionId, String userId);
 }

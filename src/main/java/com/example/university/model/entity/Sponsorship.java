@@ -27,7 +27,4 @@ public class Sponsorship extends BaseEntity {
 
     @Column(name = "budget")
     private Integer budget;
-
-    @Column(name = "status")
-    private String status;
 }

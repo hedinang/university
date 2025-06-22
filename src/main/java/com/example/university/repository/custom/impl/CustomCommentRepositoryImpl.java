@@ -29,8 +29,8 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
 //        queryBuilder.append("select wp.* from wm_prjct wp ");
         queryBuilder.append("left join university.user u on u.user_id = comment.user_id ");
-//        queryBuilder.append("where council_member.council_role = :councilRole ");
-//        queryBuilder.append("and wp.status = :status ");
+        queryBuilder.append("where comment.question_id = :questionId ");
+        queryBuilder.append("and comment.status = :status ");
 
         //limit offset
 //        queryBuilder.append(" order by wp.prjct_sn desc ");
@@ -43,7 +43,8 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 //        if (projectName != null && !projectName.isEmpty()) {
 //            query.setParameter("projectName", projectName);
 //        }
-//        query.setParameter("councilRole", "HOST");
+        query.setParameter("questionId", request.getSearch().getQuestionId());
+        query.setParameter("status", "ACTIVE");
         query.setParameter("limit", request.getLimit());
         query.setParameter("offset", (request.getPage() - 1) * request.getLimit());
 

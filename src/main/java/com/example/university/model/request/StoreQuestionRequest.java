@@ -15,5 +15,4 @@ public class StoreQuestionRequest {
     String title;
     String content;
     String recipientId;
-
 }
