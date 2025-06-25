@@ -1,15 +1,14 @@
 package com.example.university.service.custom;
 
 import com.example.university.model.dto.CustomUserDetails;
+import com.example.university.model.dto.FileDto;
 import com.example.university.model.dto.Page;
 import com.example.university.model.entity.User;
-import com.example.university.model.request.ChangePasswordRequest;
-import com.example.university.model.request.LoginRequest;
-import com.example.university.model.request.PageRequest;
-import com.example.university.model.request.UserRequest;
+import com.example.university.model.request.*;
 import com.example.university.model.request.search.FullUserSearch;
 import com.example.university.model.request.search.UserSearch;
 import com.example.university.repository.UserRepository;
+import com.example.university.service.ResourceService;
 import com.example.university.service.UserService;
 import com.example.university.util.StringUtil;
 import com.example.university.util.constant.EntityStatus;
@@ -19,6 +18,7 @@ import com.example.university.util.exception.ServiceException;
 import com.example.university.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,6 +39,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
+
+    private final ResourceService resourceService;
 
     @Override
     public Map<String, Object> loginUser(LoginRequest request) {
@@ -280,5 +282,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } catch (Exception e) {
             log.error("Failed to reset password: {}", e.getMessage());
         }
+    }
+
+    public String uploadProfileImage(UploadFileRequest request, User user) {
+        User currentUser = userRepository.findByUserId(user.getUserId()).orElseGet(null);
+
+        if (currentUser == null) return null;
+
+        byte[] decodedBytes = Base64.decodeBase64(request.getBase64().split(",")[1]);
+        FileDto fileDto = resourceService.storeFile(decodedBytes, request.getFileName());
+        currentUser.setAvatar(fileDto.getFileName());
+        userRepository.save(currentUser);
+        return fileDto.getFileName();
+    }
+
+    public void removeAvatar(User user) {
+        User currentUser = userRepository.findByUserId(user.getUserId()).orElseGet(null);
+        if (currentUser == null) return;
+        currentUser.setAvatar(null);
+        userRepository.save(currentUser);
     }
 }

@@ -3,10 +3,7 @@ package com.example.university.service;
 
 import com.example.university.model.dto.Page;
 import com.example.university.model.entity.User;
-import com.example.university.model.request.ChangePasswordRequest;
-import com.example.university.model.request.LoginRequest;
-import com.example.university.model.request.PageRequest;
-import com.example.university.model.request.UserRequest;
+import com.example.university.model.request.*;
 import com.example.university.model.request.search.FullUserSearch;
 import com.example.university.model.request.search.UserSearch;
 
@@ -42,4 +39,8 @@ public interface UserService {
     User update(User request, User user);
 
     void resetPassword(String userId, User user);
+
+    String uploadProfileImage(UploadFileRequest request, User user);
+
+    void removeAvatar(User user);
 }

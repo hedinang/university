@@ -46,7 +46,9 @@ public class User extends BaseEntity {
     @Column(name = "phone")
     private String phone;
 
-    //    @Convert(converter = LocalDateTimeStringConverter.class)
     @Column(name = "birthday")
     private Date birthday;
+
+    @Column(name = "avatar")
+    private String avatar;
 }

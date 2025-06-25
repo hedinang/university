@@ -1,11 +1,9 @@
 package com.example.university.controller;
 
-import com.example.university.model.dto.CouncilDto;
 import com.example.university.model.dto.Page;
 import com.example.university.model.entity.User;
-import com.example.university.model.request.LogoutRequest;
 import com.example.university.model.request.PageRequest;
-import com.example.university.model.request.search.CouncilSearch;
+import com.example.university.model.request.UploadFileRequest;
 import com.example.university.model.request.search.FullUserSearch;
 import com.example.university.repository.UserRepository;
 import com.example.university.service.UserService;
@@ -131,23 +129,25 @@ public class UserController {
 //        }
 //    }
 //
-//    @PostMapping("/upload-profile-image")
-//    public BaseResponse<Object> upload(@RequestBody UploadFileRequest req, @AuthenticationPrincipal User user) {
-//        String url = resourceService.uploadProfileImage(req, user);
-//
-//        if (url == null) {
-//            return new BaseResponse<>(403, "pls update an image");
-//        } else {
-//            return Response.toData(url);
-//        }
-//    }
-//
-//    @PostMapping("/remove-profile-image")
-//    public BaseResponse<Object> remove(@AuthenticationPrincipal User user) {
-//        resourceService.removeFile(user);
-//        return new BaseResponse<>(200, "Remove avatar successfully", null);
-//    }
-//
+    @PostMapping("/upload-profile-image")
+    public BaseResponse<Object> upload(@RequestBody UploadFileRequest req, @AuthenticationPrincipal User user) {
+        String url = userService.uploadProfileImage(req, user);
+
+        if (url == null) {
+            return new BaseResponse<>(403, "pls update an image");
+        } else {
+            return Response.toData(url);
+        }
+    }
+
+    //
+    @PostMapping("/remove-profile-image")
+    public BaseResponse<Object> remove(@AuthenticationPrincipal User user) {
+        userService.removeAvatar(user);
+        return new BaseResponse<>(200, "Remove avatar successfully", null);
+    }
+
+    //
 //    @PostMapping("/info-user-list")
 //    public BaseResponse<List<BasicUserInfo>> basicUserInfoList(@RequestBody List<String> userCodes) {
 //        List<BasicUserInfo> basicUserInfos = userService.findBasicUserInfoByUserCodeIn(userCodes);

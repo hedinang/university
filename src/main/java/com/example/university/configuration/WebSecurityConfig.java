@@ -112,7 +112,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers("/api/upload/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/").authenticated()
-                        .requestMatchers("/script/**").permitAll()
+                        .requestMatchers("/media/**").permitAll()
                         .requestMatchers(resources).permitAll().anyRequest().permitAll()
                 ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
