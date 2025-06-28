@@ -1,9 +1,14 @@
 package com.example.university.repository.custom.impl;
 
+import com.example.university.mapper.SponsorshipMapper;
+import com.example.university.model.dto.SponsorshipDbDto;
 import com.example.university.model.dto.SponsorshipDto;
+import com.example.university.model.entity.CouncilMember;
 import com.example.university.model.entity.User;
 import com.example.university.model.request.PageRequest;
 import com.example.university.model.request.search.SponsorshipSearch;
+import com.example.university.repository.CouncilMemberRepository;
+import com.example.university.repository.UserRepository;
 import com.example.university.repository.custom.CustomSponsorshipRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -11,11 +16,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class CustomSponsorshipRepositoryImpl implements CustomSponsorshipRepository {
     private final EntityManager entityManager;
+    private final CouncilMemberRepository councilMemberRepository;
+    private final UserRepository userRepository;
+    private final SponsorshipMapper sponsorshipMapper;
 
     @Override
     public List<SponsorshipDto> getList(PageRequest<SponsorshipSearch> request, User user) {
@@ -25,7 +35,9 @@ public class CustomSponsorshipRepositoryImpl implements CustomSponsorshipReposit
                 "sponsorship.council_id as councilId, " +
                 "sponsorship.budget as budget, " +
                 "topic.title as topicName, " +
-                "council.council_name as councilName " +
+                "council.council_name as councilName, " +
+                "topic.proposer_id as proposerId, " +
+                "topic.approver_id as approverId " +
                 "from university.sponsorship sponsorship ");
 
         queryBuilder.append("left join university.council council on council.council_id = sponsorship.council_id ");
@@ -53,13 +65,37 @@ public class CustomSponsorshipRepositoryImpl implements CustomSponsorshipReposit
 
         queryBuilder.append("order by sponsorship.updated_at desc LIMIT :limit OFFSET :offset ");
 
-        Query query = entityManager.createNativeQuery(queryBuilder.toString(), SponsorshipDto.class);
+        Query query = entityManager.createNativeQuery(queryBuilder.toString(), SponsorshipDbDto.class);
         query.setParameter("memberId", user.getUserId());
         query.setParameter("limit", request.getLimit());
         query.setParameter("offset", (request.getPage() - 1) * request.getLimit());
 
-        List<SponsorshipDto> sponsorshipDtoList = query.getResultList();
-        return sponsorshipDtoList;
+        List<SponsorshipDbDto> sponsorshipDbDtoList = query.getResultList();
+        List<String> proposerIds = sponsorshipDbDtoList.stream().map(SponsorshipDbDto::getProposerId).toList();
+        List<String> approverIds = sponsorshipDbDtoList.stream().map(SponsorshipDbDto::getApproverId).toList();
+
+
+        List<String> councilIds = sponsorshipDbDtoList.stream().map(SponsorshipDbDto::getCouncilId).toList();
+        List<CouncilMember> councilMembers = councilMemberRepository.findByCouncilIdIn(councilIds);
+        Map<String, List<CouncilMember>> councilMemberMap = councilMembers.stream().collect(Collectors.groupingBy(CouncilMember::getCouncilId));
+        List<String> userIds = new java.util.ArrayList<>(councilMembers.stream().map(CouncilMember::getMemberId).toList());
+        userIds.addAll(proposerIds);
+        userIds.addAll(approverIds);
+
+        List<User> users = userRepository.findByUserIdIn(userIds);
+        Map<String, User> userMap = users.stream().collect(Collectors.toMap(User::getUserId, u -> u));
+
+        return sponsorshipDbDtoList.stream().map(sponsorshipDbDto -> {
+            SponsorshipDto sponsorshipDto = sponsorshipMapper.toSponsorshipDto(sponsorshipDbDto);
+
+            sponsorshipDto.setProposer(userMap.get(sponsorshipDto.getProposerId()));
+            sponsorshipDto.setApprover(userMap.get(sponsorshipDto.getApproverId()));
+
+            List<CouncilMember> councilMemberList = councilMemberMap.get(sponsorshipDto.getCouncilId());
+            List<User> us = councilMemberList.stream().map(councilMember -> userMap.get(councilMember.getMemberId())).toList();
+            sponsorshipDto.setMemberList(us);
+            return sponsorshipDto;
+        }).toList();
     }
 
     @Override

@@ -36,6 +36,10 @@ public class TopicServiceImpl implements TopicService {
         return new Page<>(topicDtoList, totalItems);
     }
 
+    public List<TopicDto> getAll(TopicSearch request){
+        return topicRepository.getAll(request);
+    }
+
     @Transactional
     public TopicDto store(StoreTopicRequest request, User user) {
         Topic topic;

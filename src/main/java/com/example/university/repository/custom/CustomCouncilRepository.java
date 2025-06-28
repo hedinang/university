@@ -9,5 +9,7 @@ import java.util.List;
 public interface CustomCouncilRepository {
     List<CouncilDto> getList(PageRequest<CouncilSearch> request);
 
+    List<CouncilDto> getAll(CouncilSearch request);
+
     Long count(PageRequest<CouncilSearch> request);
 }

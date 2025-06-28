@@ -82,6 +82,62 @@ public class CustomCouncilRepositoryImpl implements CustomCouncilRepository {
         return councilDtoList.stream().peek(councilDto -> councilDto.setMemberList(councilMemGroup.get(councilDto.getCouncilId()))).toList();
     }
 
+    public List<CouncilDto> getAll(CouncilSearch request) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("select council.council_id as councilId, " +
+                "council.council_name as councilName, " +
+                "council.year as year, " +
+                "u.user_id as hostId, " +
+                "u.name as hostName, " +
+                "council.status as status, " +
+                "council_member.council_role as councilRole " +
+                "from university.council council ");
+        queryBuilder.append("left join university.council_member council_member on council.council_id = council_member.council_id ");
+        queryBuilder.append("left join university.user u on u.user_id = council_member.member_id ");
+        queryBuilder.append("where 1=1 ");
+
+        if (request.getMemberId() != null) {
+            queryBuilder.append("and council_member.member_id = :memberId ");
+        } else {
+            queryBuilder.append("and council_member.council_role = :councilRole ");
+        }
+
+        if (request.getCouncilName() != null && !request.getCouncilName().isEmpty()) {
+            queryBuilder.append("and council.council_name ilike :councilName ");
+        }
+
+        if (request.getYear() != null) {
+            queryBuilder.append("and council.year = :year ");
+        }
+
+        queryBuilder.append("order by council.updated_at desc");
+
+        Query query = entityManager.createNativeQuery(queryBuilder.toString(), CouncilDto.class);
+
+        if (request.getMemberId() != null) {
+            query.setParameter("memberId", request.getMemberId());
+        } else {
+            query.setParameter("councilRole", "HOST");
+        }
+
+        if (request.getCouncilName() != null && !request.getCouncilName().isEmpty()) {
+            query.setParameter("councilName", "%" + request.getCouncilName() + "%");
+        }
+
+        if (request.getYear() != null) {
+            query.setParameter("year", request.getYear());
+        }
+
+        List<CouncilDto> councilDtoList = query.getResultList();
+        List<String> councilIds = councilDtoList.stream().map(CouncilDto::getCouncilId).toList();
+
+        List<CouncilMemberDto> councilMemberDtoList = councilMemberRepository.listCouncilMember(councilIds);
+        Map<String, List<CouncilMemberDto>> councilMemGroup = councilMemberDtoList.stream()
+                .collect(Collectors.groupingBy(CouncilMemberDto::getCouncilId));
+
+        return councilDtoList.stream().peek(councilDto -> councilDto.setMemberList(councilMemGroup.get(councilDto.getCouncilId()))).toList();
+    }
+
     @Override
     public Long count(PageRequest<CouncilSearch> request) {
         StringBuilder queryBuilder = new StringBuilder();

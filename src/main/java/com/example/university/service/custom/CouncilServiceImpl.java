@@ -42,6 +42,10 @@ public class CouncilServiceImpl implements CouncilService {
         return new Page<>(councils, totalItems);
     }
 
+    public List<CouncilDto> getAll(CouncilSearch request) {
+        return councilRepository.getAll(request);
+    }
+
     @Transactional
     public CouncilDto store(StoreCouncilRequest request) {
         Council council;

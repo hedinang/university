@@ -1,5 +1,6 @@
 package com.example.university.repository.custom.impl;
 
+import com.example.university.model.dto.CouncilDto;
 import com.example.university.model.dto.TopicDto;
 import com.example.university.model.request.PageRequest;
 import com.example.university.model.request.search.TopicSearch;
@@ -90,6 +91,81 @@ public class CustomTopicRepositoryImpl implements CustomTopicRepository {
 
         query.setParameter("limit", request.getLimit());
         query.setParameter("offset", (request.getPage() - 1) * request.getLimit());
+        List<TopicDto> topicDtoList = query.getResultList();
+        return topicDtoList;
+    }
+
+    public List<TopicDto> getAll(TopicSearch request) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("select topic.topic_id as topicId, " +
+                "topic.proposer_id as proposerId, " +
+                "topic.approver_id as approverId, " +
+                "topic.title as title, " +
+                "topic.topic_type as topicType, " +
+                "topic.status as approverId, " +
+                "topic.start_time as startTime, " +
+                "topic.end_time as endTime, " +
+                "topic.progress as progress, " +
+                "topic.score as score, " +
+                "proposer.name as proposerName, " +
+                "approver.name as approverName " +
+                "from university.topic topic ");
+
+        queryBuilder.append("left join university.user proposer on proposer.user_id = topic.proposer_id ");
+        queryBuilder.append("left join university.user approver on approver.user_id = topic.approver_id ");
+        queryBuilder.append("where 1=1 ");
+
+        if (request.getTitle() != null) {
+            queryBuilder.append("and topic.title ilike :title ");
+        }
+
+        if (request.getScore() != null) {
+            queryBuilder.append("and topic.score = :score ");
+        }
+
+        if (request.getProgress() != null) {
+            queryBuilder.append("and topic.progress = :progress ");
+        }
+
+        if (request.getProposerId() != null) {
+            queryBuilder.append("and topic.proposer_id = :proposerId ");
+        }
+
+        if (request.getApproverId() != null) {
+            queryBuilder.append("and topic.approver_id = :approverId ");
+        }
+
+        if (request.getTopicType() != null) {
+            queryBuilder.append("and topic.topic_type = :topicType ");
+        }
+
+        queryBuilder.append("order by topic.updated_at desc");
+
+        Query query = entityManager.createNativeQuery(queryBuilder.toString(), TopicDto.class);
+        if (request.getTitle() != null) {
+            query.setParameter("title", "%" + request.getTitle() + "%");
+        }
+
+        if (request.getScore() != null) {
+            query.setParameter("score", request.getScore());
+        }
+
+        if (request.getProgress() != null) {
+            query.setParameter("progress", request.getProgress());
+        }
+
+        if (request.getProposerId() != null) {
+            query.setParameter("proposerId", request.getProposerId());
+        }
+
+        if (request.getApproverId() != null) {
+            query.setParameter("approverId", request.getApproverId());
+        }
+
+        if (request.getTopicType() != null) {
+            query.setParameter("topicType", request.getTopicType());
+        }
+
         List<TopicDto> topicDtoList = query.getResultList();
         return topicDtoList;
     }

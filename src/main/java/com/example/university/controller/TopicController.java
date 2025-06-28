@@ -4,7 +4,6 @@ import com.example.university.model.dto.Page;
 import com.example.university.model.dto.TopicDto;
 import com.example.university.model.entity.User;
 import com.example.university.model.request.PageRequest;
-import com.example.university.model.request.StoreCouncilRequest;
 import com.example.university.model.request.StoreTopicRequest;
 import com.example.university.model.request.search.TopicSearch;
 import com.example.university.service.TopicService;
@@ -34,6 +33,14 @@ public class TopicController {
             return new BaseResponse<>(403, "Dont have permission", null);
 
         return new BaseResponse<>(200, "Get data successfully", topicService.getPage(request));
+    }
+
+    @PostMapping("/all")
+    public BaseResponse<List<TopicDto>> getAll(@RequestBody TopicSearch request, @AuthenticationPrincipal User user) {
+        if (!Objects.equals(user.getRoleCode(), "TEACHER"))
+            return new BaseResponse<>(403, "Dont have permission", null);
+
+        return new BaseResponse<>(200, "Get data successfully", topicService.getAll(request));
     }
 
     @PostMapping("/store")

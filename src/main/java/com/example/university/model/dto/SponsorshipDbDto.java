@@ -10,20 +10,15 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SponsorshipDto {
+public class SponsorshipDbDto {
     private String sponsorshipId;
     private String topicId;
     private String councilId;
     private Integer budget;
-    private String status;
 
     private String topicName;
     private String councilName;
 
     private String proposerId;
     private String approverId;
-
-    private List<User> memberList;
-    private User proposer;
-    private User approver;
 }
