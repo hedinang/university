@@ -171,6 +171,11 @@ public class UserController {
         return new BaseResponse<>(200, "Get data successfully", userService.list(request));
     }
 
+    @PostMapping("/admin/person")
+    public BaseResponse<User> getUserList(@RequestBody User request) {
+        return new BaseResponse<>(200, "Get data successfully", userService.getMe(request.getUserId()));
+    }
+
     @PostMapping("/admin/create")
     public BaseResponse<User> createUser(@RequestBody User request, @AuthenticationPrincipal User user) {
         if (!Objects.equals(user.getRoleCode(), "ADMIN")) return new BaseResponse<>(403, "Dont have permission", null);
